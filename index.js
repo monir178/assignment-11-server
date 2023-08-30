@@ -50,7 +50,7 @@ async function run() {
         })
 
         //for adding review
-        app.post('/reviews', async (req, res) => {
+        app.post('/reviews', verifyJWT, async (req, res) => {
             try {
                 const result = await reviewCollection.insertOne(req.body);
                 console.log(result);
@@ -78,7 +78,7 @@ async function run() {
         })
 
         //for adding service
-        app.post('/services', async (req, res) => {
+        app.post('/services', verifyJWT, async (req, res) => {
             try {
                 const result = await serviceCollection.insertOne(req.body);
                 // console.log("result from 33", result);
@@ -128,7 +128,7 @@ async function run() {
         });
 
         // Edit review 
-        app.patch('/reviews/:id', async (req, res) => {
+        app.patch('/reviews/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             try {
                 const result = await reviewCollection.updateOne({ _id: new ObjectId(id) }, { $set: req.body });
@@ -153,7 +153,7 @@ async function run() {
         });
 
         //delete review
-        app.delete('/reviews/:id', async (req, res) => {
+        app.delete('/reviews/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             try {
                 const result = await reviewCollection.deleteOne({ _id: new ObjectId(id) });
@@ -183,7 +183,7 @@ async function run() {
         app.get('/reviews', verifyJWT, async (req, res) => {
             // console.log(req.headers.authorization);
             const decoded = req.decoded;
-            console.log('inside review', decoded);
+
             if (decoded.email !== req.query.email) {
                 res.status(403).send({ message: 'forbidden' })
             }
